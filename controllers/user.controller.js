@@ -1,7 +1,9 @@
 const userServices = require("../services/user.services");
 const sessionServices = require("../services/sessions.services");
 const generateNumber = require('../services/generateRandomNumber');
-const jwtServices = require('../services/jwt.services')
+const jwtServices = require('../services/jwt.services');
+const { Op } = require("sequelize");
+
 
 async function signUp(req,res){
     try {
@@ -120,8 +122,43 @@ async function logOut(req, res) {
   }
 }
 
+async function getUser(req,res){
+  try {
+    const query = req.query
+    const whereOptions = {};
+    if(query.Name){
+      whereOptions.Name = {
+        [Op.substring] : query.Name
+      }
+    }
+    if(query.email_address){
+      whereOptions.email_address = {
+        [Op.substring] : query.email_address
+      }
+    }
+    if(query.user_name){
+      whereOptions.user_name = {
+        [Op.substring] : query.user_name
+      }
+    }
+    const user = await userServices.getUser({
+      whereOptions: whereOptions
+    })
+    res.json({
+      message : `${user.count} user found`,
+      data : user.rows
+    })
+  } catch (error) {
+    console.log(error, " <<-----An error occured");
+    return res.status(500).json({
+      message : `server error`
+    })
+  }
+}
+
 module.exports = {
   signIn,
   logOut,
-  signUp
+  signUp,
+  getUser
 };

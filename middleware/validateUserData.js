@@ -7,7 +7,9 @@ async function validateEmail(req, res, next) {
   if (req.body.email_address) {
     const user = await userServices.findUser({
       email_address: req.body.email_address,
+      user_name : req.body.user_name
     });
+    
     // console.log(user, "<<====User data");
     if (user == null) {
       if (req.body.email_address.match(emailFormat)) {

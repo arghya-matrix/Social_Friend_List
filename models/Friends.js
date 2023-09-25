@@ -18,7 +18,8 @@ const Friends = sequelize.define('Friend',{
         type : DataTypes.BOOLEAN
     },
     blocked : {
-        type : DataTypes.BOOLEAN
+        type : DataTypes.BOOLEAN,
+        defaultValue : false
     },
     counter:{
         type : DataTypes.INTEGER
