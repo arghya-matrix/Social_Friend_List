@@ -6,6 +6,7 @@ const tokenVerify = require("../middleware/tokenVerify");
 const friendsController = require("../controllers/friends.controller");
 const friendRequestMiddleware = require("../middleware/friend.request.middleware");
 
+router.get("/get-all-user",userController.getAllUser);
 router.post(
   "/sign-up",
   [userMiddleware.validateEmail, userMiddleware.validateName],
@@ -29,9 +30,11 @@ router.put(
 router.put(
   "/accept-req",
   tokenVerify.userProfile,
+  friendRequestMiddleware,
   friendsController.acceptRequest
 );
 router.put("/reject-req",tokenVerify.userProfile,friendsController.rejectRequest)
 router.delete("/delete-friend", tokenVerify.userProfile, friendsController.deleteFriend);
+router.get("/check-status", tokenVerify.userProfile, friendsController.checkStatus);
 
 module.exports = router;

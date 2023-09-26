@@ -37,8 +37,18 @@ async function findSession({ sessions_id }) {
   const session = await db.Sessions.findOne({
     where: {
       id: sessions_id,
-    },
+    },raw : true
   });
+  return session;
+}
+
+async function findSessionByUserId({user_id}){
+  const session = await db.Sessions.findAndCountAll({
+    where : {
+      user_id : user_id,
+      logout_date : null
+    }
+  })
   return session;
 }
 
@@ -47,4 +57,5 @@ module.exports = {
   updateSession,
   logoutSession,
   findSession,
+  findSessionByUserId
 };

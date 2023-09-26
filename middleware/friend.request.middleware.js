@@ -3,10 +3,10 @@ const friendsServices = require("../services/friends.services");
 async function sendReq(req, res, next) {
   try {
     const friend = await friendsServices.findByFriendId({
-      friend_id: req.query.friend_id,
-      user_id: req.userdata.user_id,
+      friend_id:req.userdata.user_id ,
+      user_id: req.query.friend_id,
     }); 
-    console.log(friend.rows[0],"<---- friend middleware");
+    // console.log(friend.rows[0],"<---- friend middleware");
     if (friend.rows[0]!=undefined) {
       if ( friend.rows[0].accept == false && friend.rows[0].blocked == false) {
         next();

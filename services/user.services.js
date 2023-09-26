@@ -49,10 +49,18 @@ async function getUser({whereOptions}){
   return user
 }
 
+async function getAllUser(){
+  const user = await db.User.findAll({
+    raw: true
+  })
+  return user
+}
+
 module.exports = {
   signIn,
   createUser,
   findUser,
   findUserById,
-  getUser
+  getUser,
+  getAllUser
 };

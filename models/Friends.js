@@ -22,8 +22,10 @@ const Friends = sequelize.define('Friend',{
         defaultValue : false
     },
     counter:{
-        type : DataTypes.INTEGER
-    }
+        type : DataTypes.INTEGER,
+        defaultValue : 0
+    },
+    createdAt: DataTypes.DATE
 });
 
 module.exports = Friends;

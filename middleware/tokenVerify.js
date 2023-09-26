@@ -18,6 +18,7 @@ async function userProfile(req, res, next) {
           const session = await sessionServices.findSession({
             sessions_id: authData.sessions_id
           })
+          // console.log(session, " <<== session details");
           if (session.logout_date == null) {
             req.userdata = authData;
             // console.log(req.userdata);

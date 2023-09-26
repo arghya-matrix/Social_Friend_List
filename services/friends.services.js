@@ -82,6 +82,7 @@ async function acceptFriendRequest({ user_id, friend_id }) {
   const [numUpdatedRows, updatedRows] = await db.Friend.update(
     {
       accept: true,
+      blocked: false
     },
     {
       where: {
@@ -90,6 +91,11 @@ async function acceptFriendRequest({ user_id, friend_id }) {
       },
     }
   );
+  await db.Friend.create({
+    user_id : friend_id,
+    friend_id : user_id,
+    accept: true
+  })
   if (numUpdatedRows > 0) {
     const friend = await friendDetails({
       friend_id: friend_id,
@@ -116,20 +122,29 @@ async function getAllFriend({
   size,
   index,
 }) {
-  const friend = await db.Friend.findAndCountAll({
+  const friends = await db.Friend.findAndCountAll({
     attributes : ['user_id', 'accept', 'blocked', 'counter'],
     include:{
       model: db.User,
       where: searchTerm,
-      attributes : ['uuid','Name']
+      attributes : ['uuid','Name','user_id'],
+      include : {
+        model : db.Sessions,
+        attributes : ['user_id','logout_date'],
+        where : {
+          logout_date : null,
+        },
+        required: false,
+      }
     },
     where: whereOptions,
     order: orderOptions,
     limit: size,
     offset: index,
   });
-  // console.log(friend,"<-----Friend data");
-  return friend;
+  const allFriend = friends.rows.map((friend)=> friend.toJSON());
+  // console.log(allFriend,"<-----Friend data");
+  return {friends,allFriend};
 }
 
 async function rejectRequest({user_id,friend_id}){
@@ -155,6 +170,16 @@ async function rejectRequest({user_id,friend_id}){
   }
 }
 
+async function checkStatus({user_id}){
+  const sessions = await db.Sessions.findAll({
+    where : {
+      user_id : user_id
+    },
+    raw: true
+  })
+  console.log(sessions,"<=== session details");
+}
+
 module.exports = {
   sendFriendRequest,
   acceptFriendRequest,
@@ -164,5 +189,6 @@ module.exports = {
   findByFriendId,
   friendDetails,
   getAllFriend,
-  rejectRequest
+  rejectRequest,
+  checkStatus
 };

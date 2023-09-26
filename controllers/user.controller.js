@@ -156,9 +156,17 @@ async function getUser(req,res){
   }
 }
 
+async function getAllUser(req,res){
+  const user = await userServices.getAllUser()
+  res.json({
+    userdata : user
+  })
+}
+
 module.exports = {
   signIn,
   logOut,
   signUp,
-  getUser
+  getUser,
+  getAllUser
 };

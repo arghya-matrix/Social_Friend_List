@@ -32,13 +32,13 @@ async function validateEmail(req, res, next) {
 }
 
 async function validateName(req, res, next) {
-    const nameFormat = /^[a-zA-Z]+ [a-zA-Z]+$/;
+    const nameFormat = /^[A-Za-z]+(?: [A-Za-z]+)?(?: [A-Za-z]+)?$/;
     if(req.body.Name){
         if(req.body.Name.match(nameFormat)){
             next();
         }
         else{
-            return res.ststus(400).json({
+            return res.status(400).json({
                 message : `Invalid Name format`
             })
         }
