@@ -82,7 +82,8 @@ async function acceptFriendRequest({ user_id, friend_id }) {
   const [numUpdatedRows, updatedRows] = await db.Friend.update(
     {
       accept: true,
-      blocked: false
+      blocked: false,
+      counter : 0
     },
     {
       where: {

@@ -36,10 +36,23 @@ Sessions.belongsTo(User,{
 User.hasMany(Conversation,{
   foreignKey: "receiver_id",
   onDelete: "CASCADE",
-  onUpdate : "CASCADE"
+  onUpdate : "CASCADE",
+  as : "Receiver"
 })
 Conversation.belongsTo(User, {
-  foreignKey : "receiver_id"
+  foreignKey : "receiver_id",
+  as : "Receiver"
+})
+
+User.hasMany(Conversation, { 
+  foreignKey : "sender_id",
+  onDelete : "CASCADE",
+  onUpdate : "CASCADE",
+  as : "Sender"
+})
+Conversation.belongsTo(User,{
+  foreignKey : "sender_id",
+  as : "Sender"
 })
 
 sequelize.sync({ alter: true });

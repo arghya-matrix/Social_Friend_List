@@ -16,6 +16,10 @@ const Conversation = sequelize.define("Conversation", {
   },
   message:{
     type : DataTypes.TEXT
+  },
+  seen:{
+    type : DataTypes.BOOLEAN,
+    defaultValue : false
   }
 });
 

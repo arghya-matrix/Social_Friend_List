@@ -1,14 +1,15 @@
 const friendsServices = require("../services/friends.services");
+const userServices = require("../services/user.services");
 
 async function sendReq(req, res, next) {
   try {
     const friend = await friendsServices.findByFriendId({
-      friend_id:req.userdata.user_id ,
+      friend_id: req.userdata.user_id,
       user_id: req.query.friend_id,
-    }); 
+    });
     // console.log(friend.rows[0],"<---- friend middleware");
-    if (friend.rows[0]!=undefined) {
-      if ( friend.rows[0].accept == false && friend.rows[0].blocked == false) {
+    if (friend.rows[0] != undefined) {
+      if (friend.rows[0].accept == false && friend.rows[0].blocked == false) {
         next();
       }
       if (friend.rows[0].accept == true) {
@@ -25,8 +26,7 @@ async function sendReq(req, res, next) {
           message: `You have reached your max limit of sending Friend request to the user`,
         });
       }
-    }
-    else {
+    } else {
       next();
     }
   } catch (error) {
@@ -38,4 +38,25 @@ async function sendReq(req, res, next) {
   }
 }
 
-module.exports = [sendReq]
+async function validateFriend(req, res, next) {
+  const friend = await friendsServices.findByFriendId({
+    friend_id: req.query.friend_id,
+    user_id: req.userdata.user_id,
+  });
+  if (friend.count > 0) {
+    next();
+  } else {
+    const details = await userServices.findUserById({
+      friend_id: req.body.friend_id,
+    });
+    // console.log(details,"<<<<-------friend details");
+    return res.json({
+      message: `${details.Name} is not your friend. Send friend request to be a friend`,
+    });
+  }
+}
+
+module.exports = {
+  sendReq,
+  validateFriend,
+};
